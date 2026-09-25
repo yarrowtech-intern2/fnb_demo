@@ -1,0 +1,819 @@
+// import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
+// import Sidebar from "./AdminSidebar";
+
+// // Lazy load heavy sections for faster initial paint
+// const Dashboard = lazy(() => import("./AdminDashboard"));
+// const StaffManagement = lazy(() => import("./AdminStaffManagement"));
+// const RestaurantManagement = lazy(() => import("./AdminRestaurantManagement"));
+// const RestaurantSubscription = lazy(() => import("./AdminSubscription"));
+// const AdminInventory = lazy(() => import("../AdminModule/AdminInventory"));
+// const VendorManagement = lazy(() => import("./AdminVendorManagement"));
+// const MenuManagement = lazy(() => import("./AdminMenuManagement"));
+// const Account = lazy(() => import("./AdminAccount"));
+// const Notes = lazy(() => import("./AdminNotes"));
+// const Analytics = lazy(() => import("./AdminAnalytics"));
+// const Settings = lazy(() => import("./AdminSettings"));
+// const Message = lazy(() => import("./AdminMessage"));
+// const Notification = lazy(() => import("./AdminNotification"));
+// const TableManagement = lazy(() => import("./AdminTableManagement"));
+
+// import { FaBars, FaEnvelope, FaBell, FaCogs, FaHome } from "react-icons/fa";
+// import { Moon, Sun } from "lucide-react";
+
+// const Admin = () => {
+//   const [active, setActive] = useState("dashboard");
+//   const [sidebarOpen, setSidebarOpen] = useState(false);
+//   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("isDark") === "true");
+
+//   // Notification & Message Counters
+//   const [unreadNotifications, setUnreadNotifications] = useState(3);
+//   const [unreadMessages, setUnreadMessages] = useState(2);
+
+//   const mainRef = useRef(null);
+
+//   // Sync html.dark on first mount
+//   useEffect(() => {
+//     const root = document.documentElement;
+//     if (darkMode) root.classList.add("dark");
+//     else root.classList.remove("dark");
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+
+//   // Close drawer on ESC
+//   useEffect(() => {
+//     const onKey = (e) => e.key === "Escape" && setSidebarOpen(false);
+//     window.addEventListener("keydown", onKey);
+//     return () => window.removeEventListener("keydown", onKey);
+//   }, []);
+
+//   const handleModeChange = () => {
+//     const newMode = !darkMode;
+//     setDarkMode(newMode);
+//     localStorage.setItem("isDark", String(newMode));
+//     const root = document.documentElement;
+//     if (newMode) root.classList.add("dark");
+//     else root.classList.remove("dark");
+//   };
+
+//   // Scroll to top on section change
+//   useEffect(() => {
+//     if (mainRef.current) {
+//       mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+//     }
+//   }, [active]);
+
+//   // Lock body scroll when drawer open
+//   useEffect(() => {
+//     const prev = document.body.style.overflow;
+//     document.body.style.overflow = sidebarOpen ? "hidden" : "auto";
+//     return () => {
+//       document.body.style.overflow = prev;
+//     };
+//   }, [sidebarOpen]);
+
+//   const handleSetActive = (section) => {
+//     setActive(section);
+//     setSidebarOpen(false);
+//     if (section === "notification") setUnreadNotifications(0);
+//     if (section === "message") setUnreadMessages(0);
+//   };
+
+//   const renderContent = () => {
+//     switch (active) {
+//       case "dashboard": return <Dashboard />;
+//       case "staff": return <StaffManagement />;
+//       case "restaurant": return <RestaurantManagement />;
+//       case "subscription": return <RestaurantSubscription />;
+//       case "inventory": return <AdminInventory />;
+//       case "vendor": return <VendorManagement />;
+//       case "menu": return <MenuManagement />;
+//       case "account": return <Account />;
+//       case "notes": return <Notes />;
+//       case "analytics": return <Analytics />;
+//       case "settings": return <Settings />;
+//       case "message": return <Message />;
+//       case "notification": return <Notification />;
+//       case "table": return <TableManagement />;
+//       default:
+//         return (
+//           <div className="p-4 text-green-800 dark:text-green-200">
+//             <h2 className="text-xl font-bold capitalize">{active}</h2>
+//             <p className="mt-2 text-sm">Content for {active} will go here.</p>
+//           </div>
+//         );
+//     }
+//   };
+
+//   return (
+//     <div className="h-screen w-full bg-green-50 dark:bg-neutral-900 text-gray-800 dark:text-gray-200">
+//       {/* ===== Mobile Top Bar (visible on < lg) ===== */}
+//       <div className="lg:hidden sticky top-0 z-40 bg-white dark:bg-neutral-800 border-b border-black/5 dark:border-white/10">
+//         <div className="flex items-center justify-between px-4 py-3">
+//           <button
+//             onClick={() => setSidebarOpen(true)}
+//             className="p-2 bg-white dark:bg-neutral-700 rounded-md shadow-sm"
+//             aria-label="Open sidebar"
+//           >
+//             <FaBars size={18} />
+//           </button>
+
+//           <div className="text-center">
+//             <h1 className="text-base font-semibold text-black dark:text-green-100">Admin Panel</h1>
+//             <p className="text-xs capitalize text-gray-500 dark:text-gray-300">{active}</p>
+//           </div>
+
+//           <button
+//             onClick={handleModeChange}
+//             className="p-2 rounded-md bg-white dark:bg-neutral-700 shadow-sm"
+//             title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+//             aria-label="Toggle theme"
+//           >
+//             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* ===== Layout Wrapper ===== */}
+//       <div className="flex h-[calc(100vh-0px)] lg:h-screen gap-0 lg:gap-6 px-0 lg:px-4 py-0 lg:py-4 overflow-hidden">
+//         {/* Sidebar (Desktop, persistent) */}
+//         <aside className="hidden lg:block w-72 shrink-0" aria-hidden={sidebarOpen ? "true" : "false"}>
+//           <div className="h-full bg-white dark:bg-neutral-800 shadow rounded-xl overflow-hidden">
+//             <Sidebar active={active} setActive={handleSetActive} />
+//           </div>
+//         </aside>
+
+//         {/* Sidebar (Mobile Drawer) */}
+//         {sidebarOpen && (
+//           <>
+//             <div
+//               className="fixed inset-0 bg-black/40 z-[1000]"
+//               onClick={() => setSidebarOpen(false)}
+//               aria-hidden="true"
+//             />
+//             <div
+//               className="fixed top-0 left-0 h-full w-72 z-[1001] bg-white dark:bg-neutral-800 shadow-2xl rounded-r-xl overflow-y-auto"
+//               role="dialog"
+//               aria-modal="true"
+//               aria-label="Navigation"
+//             >
+//               <Sidebar active={active} setActive={handleSetActive} />
+//             </div>
+//           </>
+//         )}
+
+//         {/* ===== Main Column ===== */}
+//         <div
+//           className="flex-1 min-w-0 flex flex-col gap-4 lg:gap-6"
+//           aria-hidden={sidebarOpen ? "true" : "false"}
+//         >
+//           {/* Desktop Header */}
+//           <header className="hidden lg:block sticky top-4 z-30 mx-4 lg:mx-0 bg-white dark:bg-neutral-800 shadow px-4 py-3 rounded-xl">
+//             <div className="flex items-center justify-between">
+//               <div>
+//                 <h1 className="text-xl font-bold text-black dark:text-green-100">Admin Panel</h1>
+//                 <p className="text-sm capitalize text-gray-500 dark:text-gray-300">{active}</p>
+//               </div>
+
+//               <div className="flex gap-4 items-center text-gray-600 dark:text-gray-200">
+//                 {/* Theme Toggle */}
+//                 <button
+//                   onClick={handleModeChange}
+//                   className="p-2 transition-colors duration-200 hover:text-yellow-500 dark:hover:text-yellow-400"
+//                   title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+//                 >
+//                   {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+//                 </button>
+
+//                 {/* Messages */}
+//                 <div className="relative">
+//                   <button
+//                     title="Messages"
+//                     onClick={() => handleSetActive("message")}
+//                     className="p-2 hover:text-green-600"
+//                   >
+//                     <FaEnvelope />
+//                   </button>
+//                   {unreadMessages > 0 && (
+//                     <span className="absolute -top-1 -right-2 text-[10px] bg-blue-600 text-white rounded-full px-1.5">
+//                       {unreadMessages}
+//                     </span>
+//                   )}
+//                 </div>
+
+//                 {/* Notifications */}
+//                 <div className="relative">
+//                   <button
+//                     title="Notifications"
+//                     onClick={() => handleSetActive("notification")}
+//                     className="p-2 hover:text-green-600"
+//                   >
+//                     <FaBell />
+//                   </button>
+//                   {unreadNotifications > 0 && (
+//                     <span className="absolute -top-1 -right-2 text-[10px] bg-red-600 text-white rounded-full px-1.5">
+//                       {unreadNotifications}
+//                     </span>
+//                   )}
+//                 </div>
+
+//                 {/* Settings */}
+//                 <button
+//                   title="Settings"
+//                   onClick={() => handleSetActive("settings")}
+//                   className="p-2 hover:text-green-600"
+//                 >
+//                   <FaCogs />
+//                 </button>
+//               </div>
+//             </div>
+//           </header>
+
+//           {/* Page Content */}
+//           <main
+//             ref={mainRef}
+//             className={`flex-1 min-h-0 overflow-y-auto bg-white dark:bg-neutral-800 rounded-none lg:rounded-xl shadow-none lg:shadow p-4 lg:p-6 ${sidebarOpen ? "pointer-events-none select-none" : ""}`}
+//           >
+//             <Suspense fallback={<div className="p-6">Loading…</div>}>
+//               {renderContent()}
+//             </Suspense>
+//           </main>
+
+//           {/* Mobile Bottom Tab Bar */}
+//           <nav className="lg:hidden sticky bottom-0 z-40 bg-white/95 dark:bg-neutral-800/95 backdrop-blur border-t border-black/5 dark:border-white/10">
+//             <div className="grid grid-cols-5">
+//               <TabItem
+//                 label="Home"
+//                 icon={<FaHome size={16} />}
+//                 active={active === "dashboard"}
+//                 onClick={() => handleSetActive("dashboard")}
+//               />
+//               <TabItem
+//                 label="Messages"
+//                 icon={<FaEnvelope size={16} />}
+//                 badge={unreadMessages}
+//                 active={active === "message"}
+//                 onClick={() => handleSetActive("message")}
+//               />
+//               <TabItem
+//                 label="Notify"
+//                 icon={<FaBell size={16} />}
+//                 badge={unreadNotifications}
+//                 active={active === "notification"}
+//                 onClick={() => handleSetActive("notification")}
+//               />
+//               <TabItem
+//                 label="Analytics"
+//                 icon={<span className="font-bold text-xs">A</span>}
+//                 active={active === "analytics"}
+//                 onClick={() => handleSetActive("analytics")}
+//               />
+//               <TabItem
+//                 label="Settings"
+//                 icon={<FaCogs size={16} />}
+//                 active={active === "settings"}
+//                 onClick={() => handleSetActive("settings")}
+//               />
+//             </div>
+//           </nav>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// function TabItem({ label, icon, active, onClick, badge = 0 }) {
+//   return (
+//     <button
+//       onClick={onClick}
+//       className={`relative flex flex-col items-center justify-center py-2.5 text-xs ${
+//         active
+//           ? "text-green-700 dark:text-green-300 font-semibold"
+//           : "text-gray-600 dark:text-gray-300"
+//       }`}
+//     >
+//       <div className="relative">
+//         {icon}
+//         {badge > 0 && (
+//           <span className="absolute -top-2 -right-2 text-[10px] bg-red-600 text-white rounded-full px-1.5">
+//             {badge}
+//           </span>
+//         )}
+//       </div>
+//       <span className="mt-0.5">{label}</span>
+//     </button>
+//   );
+// }
+
+// export default Admin;
+
+
+import React, { useState, useEffect, useRef, lazy, Suspense, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./AdminSidebar";
+
+/* ===== Lazy Pages ===== */
+const Dashboard = lazy(() => import("./AdminDashboard"));
+const StaffManagement = lazy(() => import("./AdminStaffManagement"));
+const RestaurantManagement = lazy(() => import("./AdminRestaurantManagement"));
+const RestaurantEmployees = lazy(() => import("./RestaurantEmployees"));
+const AdminInventory = lazy(() => import("../AdminModule/AdminInventory"));
+const MenuManagement = lazy(() => import("./AdminMenuManagement"));
+const AdminSubscriptionOverview = lazy(() => import("./AdminSubscriptionOverview"));
+const Account = lazy(() => import("./AdminAccount"));
+const Analytical = lazy(() => import("./AdminAnalytics"));
+const Reports = lazy(() => import("./AdminReports"));
+const AdminSupport = lazy(() => import("./AdminSupport"));
+const Notes = lazy(() => import("./AdminNotes"));
+const Settings = lazy(() => import("./AdminSettings"));
+const Message = lazy(() => import("./AdminMessage"));
+const Notification = lazy(() => import("./AdminNotification"));
+const TableManagement = lazy(() => import("./AdminTableManagement"));
+const AdminVendorDirectory = lazy(() => import("./AdminVendorDirectory"));
+const AdminVendorStorefront = lazy(() => import("./AdminVendorStorefront"));
+const AdminSystemUsage = lazy(() => import("./AdminSystemUsage"));
+
+import { FaBox, FaChartBar, FaHandshake, FaHeadset, FaHeartbeat, FaSignOutAlt, FaStickyNote, FaTachometerAlt, FaUserCircle, FaUsers, FaUtensils, FaClipboardList, FaCogs } from "react-icons/fa";
+import { Moon, Sun } from "lucide-react";
+import API from "../../services/api";
+import {
+  endAnalyticsSession,
+  trackAnalyticsEvent,
+} from "../../services/projectAnalytics.service";
+import { recordLogout, getAdminSystemUsage } from "../../services/systemUsage.service";
+
+/* ─── Avatar + Profile Popup ─── */
+function AdminProfileButton() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const businessName = user?.businessName || "Admin";
+  const adminId      = user?.adminId      || "N/A";
+  const email        = user?.email        || "";
+
+  useEffect(() => {
+    const on  = () => setIsOnline(true);
+    const off = () => setIsOnline(false);
+    window.addEventListener("online",  on);
+    window.addEventListener("offline", off);
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
+  }, []);
+
+  const handleLogout = async () => {
+    await recordLogout();
+    endAnalyticsSession({ path: window.location.pathname || "/admin" }).finally(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("theme");
+      navigate("/login");
+    });
+  };
+
+  return (
+    <>
+      {/* Avatar button — sits inside the top bar */}
+      <button
+        onClick={() => setOpen(true)}
+        className="rounded-full bg-green-600 hover:bg-green-700 text-white shadow flex items-center justify-center text-lg font-bold transition-colors shrink-0"
+        style={{ width: 42, height: 42 }}
+        title={businessName}
+      >
+        {businessName.charAt(0).toUpperCase()}
+      </button>
+
+      {/* Profile popup */}
+      {open && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-80 mx-4 p-7 z-10">
+            {/* Close */}
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none"
+            >
+              ×
+            </button>
+
+            {/* Avatar */}
+            <div className="flex flex-col items-center gap-3 mb-6">
+              <div className="w-20 h-20 rounded-full bg-green-600 text-white flex items-center justify-center text-4xl font-bold">
+                {businessName.charAt(0).toUpperCase()}
+              </div>
+              <div className="text-center">
+                <p className="text-xl font-bold text-gray-800 dark:text-white">{businessName}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Administrator</p>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 space-y-3 mb-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500 dark:text-gray-400 font-medium">Admin ID</span>
+                <span className="font-semibold text-gray-800 dark:text-white">{adminId}</span>
+              </div>
+              {email && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500 dark:text-gray-400 font-medium">Email</span>
+                  <span className="font-semibold text-gray-800 dark:text-white truncate max-w-[160px]">{email}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500 dark:text-gray-400 font-medium">Status</span>
+                <span className={`font-semibold ${isOnline ? "text-green-600" : "text-red-500"}`}>
+                  {isOnline ? "● Online" : "● Offline"}
+                </span>
+              </div>
+            </div>
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold text-base transition-colors"
+            >
+              <FaSignOutAlt />
+              Logout
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+const BOTTOM_NAV = [
+  { key: "dashboard",  label: "Dashboard",  icon: FaTachometerAlt },
+  { key: "staff",      label: "Staff",      icon: FaUsers },
+  { key: "restaurant", label: "Restaurant", icon: FaUtensils },
+  { key: "inventory",  label: "Inventory",  icon: FaBox },
+  { key: "vendor",     label: "Vendor",     icon: FaHandshake },
+  { key: "system-usage", label: "Usage",    icon: FaHeartbeat },
+  { key: "menu",       label: "Menu",       icon: FaClipboardList },
+  { key: "table",      label: "Table",      icon: FaUtensils },
+  { key: "subscription", label: "Subscription", icon: FaClipboardList },
+  { key: "account",    label: "Account",    icon: FaUserCircle },
+  { key: "analytical", label: "Analytical", icon: FaChartBar },
+  { key: "reports",    label: "Reports",    icon: FaChartBar },
+  { key: "support",    label: "Support",    icon: FaHeadset },
+  { key: "notes",      label: "Notes",      icon: FaStickyNote },
+  { key: "settings",   label: "Settings",   icon: FaCogs },
+];
+
+const SUBSCRIPTION_OPEN_SECTIONS = new Set(["subscription", "account", "settings", "system-usage"]);
+
+function SubscriptionRequired({ sectionLabel, onOpenSubscription }) {
+  return (
+    <div className="rounded-[2rem] border border-amber-200 bg-[radial-gradient(circle_at_top_right,rgba(253,230,138,0.28),transparent_30%),linear-gradient(180deg,#ffffff_0%,#fffbeb_100%)] p-8 shadow-[0_24px_60px_-34px_rgba(15,23,42,0.22)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-amber-600">
+        Subscription Required
+      </p>
+      <h2 className="mt-3 text-4xl font-black tracking-[-0.05em] text-slate-950">
+        Get a plan to use {sectionLabel}
+      </h2>
+      <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+        Your admin account is created successfully, but this section stays locked until
+        you activate a subscription plan. Open the Subscription page, choose a plan,
+        complete payment, and then the system will unlock according to that plan.
+      </p>
+      <button
+        type="button"
+        onClick={onOpenSubscription}
+        className="mt-6 inline-flex rounded-full bg-[linear-gradient(180deg,#f59e0b_0%,#d97706_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_20px_40px_-24px_rgba(217,119,6,0.65)] transition hover:-translate-y-0.5"
+      >
+        Get A Plan
+      </button>
+    </div>
+  );
+}
+
+const Admin = () => {
+  const [active, setActive] = useState("dashboard");
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedIsDark = localStorage.getItem("isDark");
+    if (savedIsDark !== null) return savedIsDark === "true";
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  /* ✅ RESTAURANT STATE */
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
+  const [inventoryPendingCount, setInventoryPendingCount] = useState(0);
+  const [usageAlertCount, setUsageAlertCount] = useState(0);
+  const [selectedVendorId, setSelectedVendorId] = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+
+  const mainRef = useRef(null);
+
+  const sectionLabel =
+    BOTTOM_NAV.find((item) => item.key === active)?.label || "this section";
+
+  /* ================= EFFECTS ================= */
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("isDark", String(darkMode));
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [active]);
+
+  useEffect(() => {
+    trackAnalyticsEvent({
+      eventType: "FEATURE_USE",
+      featureKey: `admin.${active}`,
+      featureLabel: sectionLabel,
+      path: window.location.pathname || "/admin",
+      details: { panel: active, role: "admin" },
+    }).catch(() => {});
+  }, [active, sectionLabel]);
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        setSubscriptionLoading(true);
+        const res = await API.get("/subscriptions/me");
+        setSubscription(res.data?.subscription || null);
+      } catch {
+        setSubscription(null);
+      } finally {
+        setSubscriptionLoading(false);
+      }
+    };
+
+    fetchSubscription();
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchUsageAlertCount = async () => {
+      try {
+        const data = await getAdminSystemUsage();
+        if (!mounted) return;
+        setUsageAlertCount(Number(data.summary?.unseenCount) || 0);
+      } catch {
+        if (!mounted) return;
+        setUsageAlertCount(0);
+      }
+    };
+
+    fetchUsageAlertCount();
+    const intervalId = window.setInterval(fetchUsageAlertCount, 60000);
+
+    return () => {
+      mounted = false;
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  /* ================= HANDLERS ================= */
+
+  const handleModeChange = () => {
+    setDarkMode((current) => !current);
+  };
+
+  const handleSetActive = useCallback((section) => {
+    setActive(section);
+  }, []);
+
+  const hasActiveSubscription =
+    ["active", "trial"].includes(String(subscription?.status || "").toLowerCase());
+
+  const shouldBlockSection =
+    false && // demo: never lock features behind a subscription
+    !subscriptionLoading &&
+    !hasActiveSubscription &&
+    !SUBSCRIPTION_OPEN_SECTIONS.has(active);
+
+  /* ================= MAIN SWITCH ================= */
+
+  const renderContent = () => {
+    if (shouldBlockSection) {
+      return (
+        <SubscriptionRequired
+          sectionLabel={sectionLabel}
+          onOpenSubscription={() => setActive("subscription")}
+        />
+      );
+    }
+
+    switch (active) {
+      case "dashboard":
+        return <Dashboard />;
+
+      case "staff":
+        return <StaffManagement />;
+
+      /* ================= RESTAURANT LIST ================= */
+      case "restaurant":
+        return (
+          <RestaurantManagement
+            onManageEmployees={(restaurantId) => {
+              setSelectedRestaurantId(restaurantId);
+              setActive("restaurantEmployees");
+            }}
+          />
+        );
+
+      /* ================= RESTAURANT EMPLOYEES ================= */
+      case "restaurantEmployees":
+        return (
+          <RestaurantEmployees
+            restaurantId={selectedRestaurantId}
+            onBack={() => setActive("restaurant")}
+          />
+        );
+
+      case "menu":
+        return <MenuManagement />;
+
+      case "table":
+        return <TableManagement />;
+
+      case "inventory":
+        return <AdminInventory onPendingApprovalCountChange={setInventoryPendingCount} />;
+
+      case "vendor":
+        return (
+          <AdminVendorDirectory
+            onViewVendor={(vendorId) => {
+              setSelectedVendorId(vendorId);
+              setActive("vendorDetail");
+            }}
+          />
+        );
+
+      case "vendorDetail":
+        return (
+          <AdminVendorStorefront
+            vendorId={selectedVendorId}
+            onBack={() => setActive("vendor")}
+          />
+        );
+
+      case "system-usage":
+        return <AdminSystemUsage onAlertCountChange={setUsageAlertCount} />;
+
+      case "account":
+        return <Account />;
+
+      case "subscription":
+        return (
+          <AdminSubscriptionOverview
+            onSubscriptionChange={(nextSubscription) => {
+              setSubscription(nextSubscription);
+            }}
+          />
+        );
+
+      case "analytical":
+        return <Analytical />;
+
+      case "reports":
+        return <Reports />;
+
+      case "support":
+        return <AdminSupport />;
+
+      case "notes":
+        return <Notes />;
+
+      case "settings":
+        return (
+          <Settings
+            darkMode={darkMode}
+            onThemeChange={handleModeChange}
+          />
+        );
+
+      case "message":
+        return <Message />;
+
+      case "notification":
+        return <Notification />;
+
+      default:
+        return <div className="p-4">Page not found</div>;
+    }
+  };
+
+  return (
+    <div className="h-screen w-full bg-green-50 dark:bg-neutral-900">
+      {/* ===== Mobile Header ===== */}
+      <div className="2xl:hidden sticky top-0 z-40 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="text-base font-bold text-green-700 dark:text-green-400 capitalize">
+            {BOTTOM_NAV.find((n) => n.key === active)?.label ?? "Admin"}
+          </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleModeChange}
+              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <AdminProfileButton />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex h-full">
+        {/* ===== Sidebar ===== */}
+        <aside className="hidden 2xl:block w-72 shrink-0">
+          <Sidebar
+            active={active}
+            setActive={handleSetActive}
+            inventoryPendingCount={inventoryPendingCount}
+            usageAlertCount={usageAlertCount}
+          />
+        </aside>
+
+        {/* ===== Right Column ===== */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+          {/* ── Top Bar (desktop) ── */}
+          <div className="hidden 2xl:flex items-center justify-between px-6 py-3 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">{active.replace(/([A-Z])/g, " $1")}</p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleModeChange}
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+                aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+              <AdminProfileButton />
+            </div>
+          </div>
+
+          {/* ===== Main Content ===== */}
+          <main
+            ref={mainRef}
+            className="flex-1 overflow-y-auto bg-white dark:bg-neutral-800 p-4 sm:p-6 pb-24 2xl:pb-6"
+          >
+            {subscriptionLoading && !SUBSCRIPTION_OPEN_SECTIONS.has(active) && (
+              <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500">
+                Checking subscription access...
+              </div>
+            )}
+
+            {selectedRestaurantId && active === "restaurantEmployees" && (
+              <div className="mb-4 text-sm text-green-600 font-semibold">
+                Managing Employees for Restaurant ID: {selectedRestaurantId}
+              </div>
+            )}
+
+            <Suspense fallback={<div>Loading...</div>}>
+              {renderContent()}
+            </Suspense>
+          </main>
+        </div>
+      </div>
+
+      {/* ===== Bottom Navigation (mobile & tablet only) ===== */}
+      <nav className="2xl:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-neutral-800 border-t border-gray-200 dark:border-gray-700 flex items-stretch overflow-x-auto shadow-[0_-2px_12px_rgba(0,0,0,0.08)]">
+        {BOTTOM_NAV.map(({ key, label, icon: Icon }) => {
+          const isActive = active === key;
+          const badgeCount =
+            key === "inventory"
+              ? inventoryPendingCount
+              : key === "system-usage"
+              ? usageAlertCount
+              : 0;
+          const icon = React.createElement(Icon, { size: 18 });
+          return (
+            <button
+              key={key}
+              onClick={() => handleSetActive(key)}
+              className={`min-w-[72px] flex-1 flex flex-col items-center justify-center gap-1 py-2 text-[10px] font-semibold transition-colors
+                ${isActive
+                  ? "text-green-600 dark:text-green-400"
+                  : "text-gray-400 dark:text-gray-500 hover:text-green-500 dark:hover:text-green-400"
+                }`}
+            >
+              <span className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-colors
+                ${isActive ? "bg-green-100 dark:bg-green-900/40" : ""}`}>
+                {icon}
+                {badgeCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-bold leading-none text-white">
+                    {badgeCount > 9 ? "9+" : badgeCount}
+                  </span>
+                )}
+              </span>
+              {label}
+            </button>
+          );
+        })}
+      </nav>
+    </div>
+  );
+};
+
+export default Admin;

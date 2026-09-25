@@ -1,0 +1,70 @@
+import API from "./api";
+import {
+  clearAuthSession,
+  enforceSession,
+  startSession,
+} from "./session.service";
+import {
+  endAnalyticsSession,
+  trackAnalyticsEvent,
+} from "./projectAnalytics.service";
+
+export const login = async (role, credentials) => {
+  // On failure the raw axios error propagates so callers can
+  // inspect error.response?.status / .data.code and detect
+  // network failures (see parseAuthError).
+  const res = await API.post(`/${role}/login`, credentials);
+  const data = res.data;
+
+  if (!data || !data.token) {
+    throw new Error("Invalid login response from server");
+  }
+
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  startSession();
+  try {
+    await trackAnalyticsEvent({
+      eventType: "LOGIN",
+      featureKey: "auth.login",
+      featureLabel: "Login",
+      path: window.location.pathname || "/superadmin-login",
+      details: { role: data.user?.role || role },
+    });
+  } catch {
+    // Analytics should not block login.
+  }
+
+  return data;
+};
+
+export const getUser = () => {
+  try {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  } catch {
+    console.error("Invalid user data in storage");
+    return null;
+  }
+};
+
+export const getToken = () => {
+  return localStorage.getItem("token");
+};
+
+export const isAuthenticated = () => {
+  return enforceSession() && !!localStorage.getItem("token");
+};
+
+export const logout = async () => {
+  try {
+    if (localStorage.getItem("token")) {
+      await API.post("/session/logout");
+    }
+  } catch {
+    // logout must never fail because of usage tracking
+  }
+  await endAnalyticsSession({ path: window.location.pathname || "/" });
+  clearAuthSession();
+  window.location.replace("/");
+};
