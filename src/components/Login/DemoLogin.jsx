@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { roleUser } from "../../demo/db";
 import { resetDb } from "../../demo/mockAdapter";
+import { DEMO_VENDOR_USER } from "../../demo/vendorMock";
 import { startSession } from "../../services/session.service";
 
 const ROLES = [
@@ -8,10 +9,9 @@ const ROLES = [
   { role: "manager", label: "Manager", route: "/manager", icon: "📋", desc: "Daily operations, tables, staff and sales" },
   { role: "waiter", label: "Waiter", route: "/waiter", icon: "🧑‍🍽️", desc: "Take orders, manage tables, send to billing" },
   { role: "chef", label: "Chef", route: "/chef", icon: "👨‍🍳", desc: "Kitchen queue: accept, prepare, mark ready" },
-  { role: "suchef", label: "Sous Chef", route: "/sucheif", icon: "🍳", desc: "Kitchen support and inventory" },
   { role: "accountant", label: "Accountant", route: "/accountant", icon: "🧾", desc: "Billing, payments and daily sales" },
   { role: "inventory_manager", label: "Inventory Manager", route: "/inventorymanager", icon: "📦", desc: "Stock, suppliers and approvals" },
-  { role: "cleaner", label: "Cleaner", route: "/cleaner", icon: "🧹", desc: "Table cleaning tasks" },
+  { role: "vendor", label: "Vendor", route: "/vendor", icon: "🚚", desc: "Supplier view: products, orders, settlements, negotiations" },
 ];
 
 export default function DemoLogin() {
@@ -19,7 +19,7 @@ export default function DemoLogin() {
 
   const enter = (item) => {
     resetDb();
-    const user = roleUser(item.role);
+    const user = item.role === "vendor" ? DEMO_VENDOR_USER : roleUser(item.role);
     localStorage.setItem("token", "demo-token");
     localStorage.setItem("user", JSON.stringify(user));
     startSession();

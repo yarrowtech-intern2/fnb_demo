@@ -202,16 +202,6 @@ const AdminMessages = () => {
           ],
         },
       ],
-      superadmin: [
-        {
-          id: 3,
-          name: "Super Admin",
-          messages: [
-            { from: "admin", content: "Policy review pending?", time: "Today" },
-            { from: "superadmin", content: "Scheduled for 3 PM.", time: "Today" },
-          ],
-        },
-      ],
       manager: [
         {
           id: 4,
@@ -274,7 +264,7 @@ const AdminMessages = () => {
 
       {/* Tabs */}
       <div className="flex space-x-2 px-2 mt-2 mb-4 overflow-x-auto">
-        {["vendor", "superadmin", "manager"].map((role) => (
+        {["vendor", "manager"].map((role) => (
           <button
             key={role}
             onClick={() => switchRole(role)}

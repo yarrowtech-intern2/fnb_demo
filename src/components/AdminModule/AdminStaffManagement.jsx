@@ -325,9 +325,7 @@ const ROLE_OPTIONS = [
   "MANAGER",
   "INVENTORY_MANAGER",
   "CHEF",
-  "SUCHEF",
   "WAITER",
-  "CLEANER",
   "ACCOUNTANT",
 ];
 

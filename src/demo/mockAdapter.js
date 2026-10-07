@@ -1,11 +1,13 @@
 import axios from "axios";
 import { buildDb, uid, RESTAURANT_ID, DEMO_ADMIN } from "./db.js";
+import { registerVendorRoutes, resetVendorDb } from "./vendorMock.js";
 
 // Fake backend for the client demo. Every axios request in the app is
 // answered from the in-memory `db` below - no server, no database.
 let db = buildDb();
 export const resetDb = () => {
   db = buildDb();
+  resetVendorDb();
 };
 
 const ok = (data, status = 200) => ({ status, data });
@@ -67,6 +69,7 @@ const on = (method, pattern, handler) => {
 ["employee", "admin", "super_admin", "superadmin", "vendor"].forEach((r) =>
   on("POST", `/${r}/login`, () => ok({ success: true, token: "demo-token", user: DEMO_ADMIN }))
 );
+registerVendorRoutes(on, { ok, fail, clone });
 on("POST", "/session/logout", () => ok({ success: true }));
 on("GET", "/employees/me", () => ok(clone(db.employees[0])));
 on("GET", "/admin/me", () => ok(clone(DEMO_ADMIN)));

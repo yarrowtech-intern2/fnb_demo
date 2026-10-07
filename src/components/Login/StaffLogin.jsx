@@ -26,10 +26,8 @@ const ROLE_ROUTES = {
   chef: "/chef",
   cheif: "/chef",
   "chef-dashboard": "/chef",
-  suchef: "/sucheif",
   inventory_manager: "/inventorymanager",
   waiter: "/waiter",
-  cleaner: "/cleaner",
   accountant: "/accountant",
 };
 
@@ -39,10 +37,8 @@ const ROLE_LABELS = {
   manager: "Manager",
   chef: "Chef",
   cheif: "Chef",
-  suchef: "Sous Chef",
   inventory_manager: "Inventory Manager",
   waiter: "Waiter",
-  cleaner: "Cleaner",
   accountant: "Accountant",
 };
 

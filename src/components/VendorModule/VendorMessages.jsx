@@ -5,7 +5,6 @@ const VendorMessages = () => {
   const [activeChat, setActiveChat] = useState("admin");
   const [messages, setMessages] = useState({
     admin: [{ from: "admin", text: "Welcome to the vendor panel!", time: "10:00 AM" }],
-    superAdmin: [{ from: "superAdmin", text: "Hi, this is Super Admin support.", time: "9:30 AM" }],
   });
   const [newMessage, setNewMessage] = useState("");
   const chatEndRef = useRef(null);
@@ -68,16 +67,6 @@ const VendorMessages = () => {
             onClick={() => setActiveChat("admin")}
           >
             Admin
-          </button>
-          <button
-            className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
-              activeChat === "superAdmin"
-                ? "bg-green-600 text-white"
-                : "border border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-neutral-600 dark:text-gray-200 dark:hover:bg-neutral-700"
-            }`}
-            onClick={() => setActiveChat("superAdmin")}
-          >
-            Super Admin
           </button>
         </div>
       </div>

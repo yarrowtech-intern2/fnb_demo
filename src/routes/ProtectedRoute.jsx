@@ -8,14 +8,11 @@ const roleLoginMap = {
   accountant: "/login",
   manager: "/login",
   waiter: "/login",
-  cleaner: "/login",
   vendor: "/login",
   inventorymanager: "/login",
   inventory_manager: "/login",
   superadmin: "/superadmin-login",
   super_admin: "/superadmin-login",
-  suchef: "/login",
-  sucheif: "/login",
 };
 
 const ProtectedRoute = ({ children, allowedRoles }) => {

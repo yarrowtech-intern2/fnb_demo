@@ -276,7 +276,19 @@ export default function AdminAccount() {
         startDate: activeFilters.startDate,
         endDate: activeFilters.endDate,
       });
-      setData(response.data?.data || response.data || response);
+      const result = response.data?.data || response.data || response;
+      setData({
+        ...result,
+        summary: {
+          totalOrders: 0,
+          totalRevenue: 0,
+          averageBillValue: 0,
+          todayCollections: 0,
+          selectedRestaurantCount: 0,
+          ...(result?.summary || {}),
+        },
+        bills: Array.isArray(result?.bills) ? result.bills : [],
+      });
     } catch (error) {
       console.error("Admin Account History Error:", error);
       setData({
@@ -313,8 +325,8 @@ export default function AdminAccount() {
   }, []);
 
   const complimentaryStats = useMemo(
-    () => data.summary.complimentary || getComplimentaryStats(data.bills),
-    [data.bills, data.summary.complimentary]
+    () => data.summary?.complimentary || getComplimentaryStats(data.bills),
+    [data.bills, data.summary?.complimentary]
   );
 
   const filteredBills = useMemo(() => {

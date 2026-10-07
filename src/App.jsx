@@ -134,11 +134,9 @@ const PublicMenu = lazy(() => import("./Pages/PublicMenu"));
 const ProjectDocument = lazy(() => import("./Pages/ProjectDocument"));
 
 /* ================= LOGIN PAGES ================= */
-const SuperAdminLogin = lazy(() => import("./components/Login/SuperAdminLogin"));
 const StaffLogin = lazy(() => import("./components/Login/DemoLogin"));
 
 /* ================= DASHBOARDS ================= */
-const Superadmin = lazy(() => import("./components/SuperadminModule/Superadmin"));
 const Admin = lazy(() => import("./components/AdminModule/Admin"));
 const AdminExploreVendors = lazy(() => import("./components/AdminModule/AdminExploreVendors"));
 const Vendor = lazy(() => import("./components/VendorModule/Vendor"));
@@ -147,11 +145,9 @@ const VendorInvitationAccept = lazy(() =>
 );
 const Manager = lazy(() => import("./components/ManagerModule/Manager"));
 const Chef = lazy(() => import("./components/ChefModule/Chef"));
-const SuCheif = lazy(() => import("./components/SuCheifModule/SuCheif"));
 const InventoryManager = lazy(() => import("./components/InventoryManagerModule/InventoryManager"));
 const Accountant = lazy(() => import("./components/AccountantModule/Accountant"));
 const Waiter = lazy(() => import("./components/WaiterModule/Waiter"));
-const Cleaner = lazy(() => import("./components/CleanerModule/Cleaner"));
 
 const RouteFallback = () => (
   <div className="flex min-h-screen items-center justify-center bg-white text-sm font-medium text-gray-500 dark:bg-neutral-900 dark:text-gray-300">
@@ -293,18 +289,9 @@ const App = () => {
         <Route path="/department/floor" element={<FloorPage />} />
 
         {/* ===== LOGIN ===== */}
-        <Route path="/superadmin-login" element={<StaffLogin />} />
         <Route path="/login" element={<StaffLogin />} />
 
         {/* ===== DASHBOARDS (ROLE PROTECTED) ===== */}
-        <Route
-          path="/superadmin/*"
-          element={
-            <ProtectedRoute allowedRoles={["super_admin"]}>
-              <Superadmin />
-            </ProtectedRoute>
-          }
-        />
 
         <Route
           path="/admin/vendor-explore"
@@ -360,16 +347,6 @@ const App = () => {
           }
         />
 
-        {/* 🔥 SU CHEF (PATH CONSISTENT) */}
-        <Route
-          path="/sucheif/*"
-          element={
-            <ProtectedRoute allowedRoles={["suchef"]}>
-              <SuCheif />
-            </ProtectedRoute>
-          }
-        />
-
         <Route
           path="/inventorymanager/*"
           element={
@@ -394,15 +371,6 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={["waiter"]}>
               <Waiter />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/cleaner/*"
-          element={
-            <ProtectedRoute allowedRoles={["cleaner"]}>
-              <Cleaner />
             </ProtectedRoute>
           }
         />

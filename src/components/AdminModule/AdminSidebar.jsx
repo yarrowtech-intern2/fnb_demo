@@ -14,6 +14,8 @@ import {
   FaCogs,
   FaHeadset,
   FaHeartbeat,
+  FaStar,
+  FaAddressCard,
   FaBars,
   FaTimes,
 } from "react-icons/fa";
@@ -67,6 +69,8 @@ const Sidebar = ({
     { name: "System Usage",        icon: FaHeartbeat,     key: "system-usage" },
     { name: "Menu Management",     icon: FaClipboardList, key: "menu" },
     { name: "Table Management",    icon: FaUtensils,      key: "table" },
+    { name: "Feedback",           icon: FaStar,   key: "feedback" },
+    { name: "CRM",                icon: FaAddressCard,   key: "crm" },
     { name: "Subscription",        icon: FaCreditCard,    key: "subscription" },
     { name: "Account",             icon: FaUserCircle,    key: "account" },
     { name: "Analytical",          icon: FaChartBar,      key: "analytical" },

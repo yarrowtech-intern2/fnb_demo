@@ -42,10 +42,8 @@ export const buildDb = () => {
     emp("e_wtr", "Meera Nair", "WAITER", "WTR"),
     emp("e_wtr2", "Karan Shah", "WAITER", "WTR2"),
     emp("e_chf", "Rohit Verma", "CHEF", "CHF"),
-    emp("e_suc", "Sana Iqbal", "SUCHEF", "SUC"),
     emp("e_acc", "Neha Kapoor", "ACCOUNTANT", "ACC"),
     emp("e_inv", "Vikram Singh", "INVENTORY_MANAGER", "INV"),
-    emp("e_cln", "Ramesh Kumar", "CLEANER", "CLN"),
   ];
 
   const kitchenSections = [
